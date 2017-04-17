@@ -4,7 +4,8 @@
   </head>
   <body>
 	<script>
-	  alert('xss');
+	  test = parent.parent.document.innerHTML;
+	  console.log(test);
 	</script>
   </body>
 </html>
