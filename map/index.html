@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<!-- saved from url=(0025)https://hnsdfz.github.io/ -->
+<html style="height: 100%"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%; -webkit-tap-highlight-color: transparent; user-select: none; position: relative;" _echarts_instance_="ec_1533640471863"><div style="position: relative; overflow: hidden; width: 1299px; height: 598px; padding: 0px; margin: 0px; border-width: 0px; cursor: pointer;"><canvas data-zr-dom-id="zr_0" width="1299" height="598" style="position: absolute; left: 0px; top: 0px; width: 1299px; height: 598px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas><canvas data-zr-dom-id="zr_2" width="1299" height="598" style="position: absolute; left: 0px; top: 0px; width: 1299px; height: 598px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas></div><div></div></div>
+       <script type="text/javascript" src="./index_files/echarts.min.js"></script>
+       <script type="text/javascript" src="./index_files/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="./index_files/ecStat.min.js"></script>
+       <script type="text/javascript" src="./index_files/dataTool.min.js"></script>
+       <script type="text/javascript" src="./index_files/china.js"></script>
+       <script type="text/javascript" src="./index_files/world.js"></script>
+       <script type="text/javascript" src="./index_files/api"></script><script type="text/javascript" src="./index_files/getscript"></script>
+       <script type="text/javascript" src="./index_files/bmap.min.js"></script>
+       <script type="text/javascript" src="./index_files/simplex.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+var geoCoordMap = {
+    '北京':[116.46,39.92],
+    '天津':[117.2,39.13],
+    '威海':[122.1,37.5],
+    '青岛':[120.33,36.07],
+    '济南':[117,36.65],
+    '济宁':[116.59,35.38],
+    '上海':[121.48,31.22],
+    '杭州':[120.19,30.26],
+    '宁波':[121.56,29.86],
+    '南昌':[115.89,28.68],
+    '赣州':[114.93,25.83],
+    '九江':[115.97,29.71],
+    '吉安':[114.98,27.12],
+    '南京':[118.78,32.04],
+    '海口':[110.35,20.02],
+    '遵义':[106.9,27.7],
+    '成都':[104.06,30.67],
+    '东京':[139.46,35.42],
+    '长沙':[113,28.21],
+    '武汉':[114.31,30.52],
+    '大连':[121.62,38.92],
+    '包头':[110,40.58],
+    '秦皇岛':[119.57,39.95],
+
+    '江西师大附中':[115.89,28.68]
+
+};
+var BJData = [
+    [{name:'北京' ,value:15},{name:'南昌'}],
+    [{name:'天津' ,value:2},{name:'南昌'}],
+    [{name:'威海' ,value:3},{name:'南昌'}],
+    [{name:'青岛' ,value:4},{name:'南昌'}],
+    [{name:'济南' ,value:2},{name:'南昌'}],
+    [{name:'济宁' ,value:3},{name:'南昌'}],
+    [{name:'上海' ,value:4},{name:'南昌'}],
+    [{name:'杭州' ,value:2},{name:'南昌'}],
+    [{name:'宁波' ,value:4},{name:'南昌'}],
+    [{name:'赣州' ,value:8},{name:'南昌'}],
+    [{name:'九江' ,value:4},{name:'南昌'}],
+    [{name:'吉安' ,value:7},{name:'南昌'}],
+    [{name:'南京' ,value:2},{name:'南昌'}],
+    [{name:'海口' ,value:5},{name:'南昌'}],
+    [{name:'遵义' ,value:5},{name:'南昌'}],
+    [{name:'成都' ,value:4},{name:'南昌'}],
+    [{name:'东京' ,value:3},{name:'南昌'}],
+    [{name:'长沙' ,value:2},{name:'南昌'}],
+    [{name:'武汉' ,value:7},{name:'南昌'}],
+    [{name:'大连' ,value:5},{name:'南昌'}],
+    [{name:'包头' ,value:4},{name:'南昌'}],
+    [{name:'秦皇岛' ,value:3},{name:'南昌'}],
+    [{name:'南昌' ,value:1},{name:'南昌'}]
+
+];
+var convertData = function (data) {
+    var res = [];
+    for (var i = 0; i < data.length; i++) {
+        var dataItem = data[i];
+        var toCoord = geoCoordMap[dataItem[0].name];
+        var fromCoord = geoCoordMap[dataItem[1].name];
+        if (fromCoord && toCoord) {
+            res.push([
+              {
+                  coord:fromCoord,
+                  value: dataItem[0].value
+              },
+              {
+                coord: toCoord,
+              }
+            ]);
+        }
+    }
+    return res;
+};
+
+var color = ['#a6c84c', '#ffa022', '#46bee9'];
+var series = [];
+[['江西师大附中', BJData]].forEach(function (item, i) {
+    series.push(
+    {
+        type: 'lines',
+        zlevel: 2,
+        effect: {
+            show: true,
+            period: 4, //箭头指向速度，值越小速度越快
+            trailLength: 0.2,//特效尾迹长度[0,1]值越大，尾迹越长重
+            symbol:'arrow',//箭头图标
+            symbolSize: 5,//图标大小
+        },
+        lineStyle: {
+            normal: {
+                width: 10,//尾迹线条宽度
+                opacity: 0,//尾迹线条透明度
+                curveness: 0 //尾迹线条曲直度
+            }
+        },
+
+        data: convertData(item[1])
+    },
+    {
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        zlevel: 2,
+        rippleEffect: {//涟漪特效
+          period:4,//动画时间，值越小速度越快
+            brushType: 'stroke', //波纹绘制方式 stroke, fill
+            scale: 4 //波纹圆环最大限制，值越大波纹越大
+        },
+        label: {
+            normal: {
+                show: true,
+                position: 'right',//显示位置
+                offset:[5, 0], //偏移设置
+                formatter: '{b}' //圆环显示文字
+            },
+            emphasis: {
+              show: true
+            }
+        },
+        symbol: 'circle',
+        symbolSize: function (val) {
+            return 8; //圆环大小
+        },
+        itemStyle: {
+            normal: {
+              show: true,
+                color: '#f00'
+            }
+        },
+        data: item[1].map(function (dataItem) {
+            return {
+                name: dataItem[0].name,
+                value: geoCoordMap[dataItem[0].name].concat([dataItem[0].value])
+            };
+        }),
+    },
+    //被攻击点
+    {
+        type: 'scatter',
+        coordinateSystem: 'geo',
+        zlevel: 2,
+        rippleEffect: {
+          period:4,
+            brushType: 'stroke',
+            scale: 4
+        },
+        label: {
+            normal: {
+                show: true,
+                position: 'right',
+//                      offset:[5, 0],
+
+        color:'#00ffff',
+                formatter: '{b}',
+                textStyle: {
+                  color:"#00ffff"
+                }
+            },
+            emphasis: {
+              show: true
+            }
+        },
+        symbol: 'pin',
+        symbolSize:30,
+        itemStyle: {
+            normal: {
+              show: true,
+                color: '#9966cc'
+            }
+        },
+        data:[{
+            name: item[0],
+            value: geoCoordMap[item[0]].concat([100]),
+        }],
+    }
+    );
+});
+
+var person=[];
+person['武汉']='方梦龙，陈沆，胡振，黄雅姿';
+person['秦皇岛']='李昊天';
+person['大连']='姜艳，丁钰涵';
+person['北京']='胡浦云，谭健智，毛凯，<br/>诸吴穹，倪沁源，周世杰';
+person['包头']='胡世宇';
+person['长沙']='敖齐庄，胡君';
+person['天津']='席广';
+person['威海']='万俊伟';
+person['成都']='王雨轩，万俊豪，何林一，吴悠，何佳洋';
+person['青岛']='樊景荣';
+person['济南']='汪瑞怡';
+person['济宁']='毛璐瑶，刘煜';
+person['贵州']='何睿心，程之彦，陈雨欧，徐嘉豫，魏干祎';
+person['遵义']='桂启宸';
+person['杭州']='张子健';
+person['海口']='刘美辰';
+person['宁波']='何川';
+person['南昌']='徐瑜涵，易琳雅，彭若然，章雨蓉，付旭怡，<br/>李成，尚午辰，张翼强，熊卓思，徐昊翔，<br/>杜豪，赵璟洋，张宇庭，刘启明，张昀，<br/>漆丽展，席联松，载隆俊，熊庆莅';
+person['赣州']='丁佳俊';
+person['九江']='刘远昊';
+person['吉安']='周玉微';
+person['东京']='陈子杭';
+person['南京']='郭玥，曹堃博，吴卓然';
+
+option = {
+    backgroundColor: '#404a59',
+  title: {
+            text: '奇怪的地图\n魔改自blue的1502地图',
+            textStyle:{
+              color:'#fff',
+              fontSize:20
+            },
+            padding:[20,20,20,20]
+    },
+    tooltip : {
+        trigger : 'item',
+        backgroundColor:'rgba(12, 204, 104, 0.92)',
+        borderColor:'#FFFFCC',
+        showDelay : 0,
+        hideDelay : 0,
+        enterable:true,
+        transitionDuration : 0,
+        extraCssText:'z-index:100',
+        formatter : function(params, ticket, callback) {
+            //根据业务自己拓展要显示的内容
+          var res = "";
+          var name = params.name;
+          var value = params.value;
+          // console.log(person[name]);
+          if(person[name]) res = "<span>"+person[name]+"</span>";
+          return res;
+        }
+  },
+  visualMap: { //图例值控制
+        min : 0,
+        max : 15,
+        calculable : true,
+        color: ['#ff3333', 'orange','yellowgreen', 'palegreen','peru','lime','khaki','aqua'],
+        textStyle:{
+            color:'#fff'
+        }
+    },
+  geo: {
+    map: 'world',
+    label: {
+      emphasis: {
+        show: false
+      }
+    },
+    zoom:1.3,
+    roam: true, //是否允许缩放
+    layoutCenter: ['-55%', '110%'], //地图位置
+    layoutSize:"580%",
+    itemStyle: {
+      normal: {
+        color: 'rgba(51, 69, 89, .5)', //地图背景色
+        borderColor: 'rgba(100,149,237,1)' //省市边界线
+      },
+      emphasis: {
+        color: 'rgba(37, 43, 61, .5)'//悬浮背景
+      }
+    }
+  },
+
+    series: series
+};
+
+    var counts = option.series[0].data.length; //获取所有闪动圆环数量
+    var dataIndex = 0;
+    //让圆环的提示框自动触发轮播显示
+  function autoHoverTip(){
+     for(var i = 0;i<counts;i++){
+       (function (i) {
+                 ts = setTimeout(function () {
+                    myChart.dispatchAction({
+            type: 'showTip',
+            seriesIndex: 1,
+            dataIndex: i
+          });
+                     }, 5000*i);
+                })(i);
+      }
+  }
+
+  //   setTimeout(function() {
+  //    // autoHoverTip();
+  //        tv = setInterval(autoHoverTip, counts*5600);
+  // }, 500);
+
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+
+</body></html>
